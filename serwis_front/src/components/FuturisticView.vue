@@ -3,7 +3,6 @@
 import { RouterLink, RouterView } from "vue-router";
 import { ref } from 'vue';
 
-
 import ChoiceDialog from "@/components/ChoiceDialog.vue";
 
 const showChoiceDialog = ref(false);
@@ -12,6 +11,105 @@ const openChoiceDialog = () => {
   showChoiceDialog.value = true;
 };
 </script>
+
+<script>
+import axios from 'axios';
+
+export default {
+
+  name: "FuturisticView",
+
+  data() {
+    return {
+      baseURL: "http://localhost:8000",
+      
+      marka: '',
+      model:'',
+      rok:'',
+      moc_silnika: '',
+      cena:'',
+      opis:'',
+      dostepny:'',
+      obraz:'',
+      klimatyzacja:'',
+      typ:'futuristic',
+      cars:[],
+      filteredCars: [],
+    };
+  },
+
+  methods: {
+  async getAllCars() {
+    try {
+        const token = localStorage.getItem("token");
+        console.log("Token from localStorage:", token);
+        const response = await axios.get(`${this.baseURL}/api/auth/cars`, {
+          timeout: 30000,
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+
+        this.cars = response.data;
+        this.applyFilters();
+    } catch (error) {
+        console.error("Failed to fetch cars", error);
+    }
+},
+    
+    checkAuthentication() {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        // Brak autoryzacji, przekieruj użytkownika na stronę logowania
+        this.$router.push("/login");
+      } else {
+        // Autoryzacja jest poprawna, pobierz dane
+        this.getAllCars();
+      }
+    },
+    // ... inne metody ...
+
+    applyFilters() {
+      if (
+        this.marka === '' &&
+        this.model === '' &&
+        this.rok === '' &&
+        this.cena === '' &&
+        this.typ === ''
+      ) {
+        this.filteredCars = [];
+      } else {
+        this.filteredCars = this.cars.filter(car =>
+          car.marka.toLowerCase().includes(this.marka.toLowerCase()) &&
+          car.model.toLowerCase().includes(this.model.toLowerCase()) &&
+          car.rok.toString().includes(this.rok) &&
+          car.cena.toString().includes(this.cena) &&
+          (this.typ === '' || car.typ.toLowerCase() === this.typ.toLowerCase()) // Dodaj ten warunek
+   
+        );
+      }
+    },
+  },
+
+  mounted() {
+    this.checkAuthentication();
+    this.getAllCars();
+  },
+
+  watch: {
+    marka: 'applyFilters',
+    model: 'applyFilters',
+    rok: 'applyFilters',
+    cena: 'applyFilters',
+    typ: 'applyFilters'
+  },
+
+};
+
+</script>
+<style scoped>
+
+</style>
 <template>
           
   <head>
@@ -25,6 +123,9 @@ const openChoiceDialog = () => {
   </head>
   
   <body>
+    <div v-if="authorized" class="alert alert-success" role="alert">
+  Autoryzacja udana! Witaj w strefie bezpiecznej.
+</div>
       <div class="slider" >
         <router-view @authenticated="setAuthenticated">
         
@@ -39,193 +140,50 @@ const openChoiceDialog = () => {
   <div class="links">
     <router-link style="text-decoration: none; color: inherit;"  to="/home" replace><h3>HOME</h3></router-link><br>
     <router-link style="text-decoration: none; color: inherit;"  to="/future" replace><h3>FUTURISTIC</h3></router-link>
-    <router-link style="text-decoration: none; color: inherit;"  to="" replace><h3>SPORT</h3></router-link>
-    <router-link style="text-decoration: none; color: inherit;"  to="" replace><H3>MUSCLE</H3></router-link>
-    <router-link style="text-decoration: none; color: inherit;"  to="" replace><H3>CLASSIC MUSCLE</H3></router-link>
-    <router-link style="text-decoration: none; color: inherit;"  to="" replace><h3>SUV</h3></router-link>
-    <router-link style="text-decoration: none; color: inherit;"  to="" replace><H3>SEDAN</H3></router-link>
-    <router-link style="text-decoration: none; color: inherit;"  to="" replace><H3>CLASSIC</H3></router-link>
+    <router-link style="text-decoration: none; color: inherit;"  to="/sport" replace><h3>SPORT</h3></router-link>
+    <router-link style="text-decoration: none; color: inherit;"  to="/muscle" replace><H3>MUSCLE</H3></router-link>
+    <router-link style="text-decoration: none; color: inherit;"  to="/cmuscle" replace><H3>CLASSIC MUSCLE</H3></router-link>
+    <router-link style="text-decoration: none; color: inherit;"  to="/suv" replace><h3>SUV</h3></router-link>
+    <router-link style="text-decoration: none; color: inherit;"  to="/sedan" replace><H3>SEDAN</H3></router-link>
+    <router-link style="text-decoration: none; color: inherit;"  to="/classic" replace><H3>CLASSIC</H3></router-link>
   </div>
       <div class="background">
         <div class="sidebar">
-        <h2>Filtry</h2>
-        <!-- Filtry -->
-        <label for="brand">Marka pojazdu</label>
-        <input type="text" id="brand" v-model="brand" />
-
+      <h2>Filtry</h2>
+      <div class="filter-item">
+        <label for="marka">Marka pojazdu</label>
+        <input type="text" id="marka" v-model="marka" /><br>
         <label for="model">Model pojazdu</label>
-        <input type="text" id="model" v-model="model" />
-
-        <label for="generation">Generacja</label>
-        <input type="text" id="generation" v-model="generation" />
-
-        <label for="bodyType">Typ nadwozia</label>
-        <input type="text" id="bodyType" v-model="bodyType" />
-
-        <label for="priceFrom">Cena od</label>
-        <input type="number" id="priceFrom" v-model="priceFrom" />
-
-        <label for="priceTo">Cena do</label>
-        <input type="number" id="priceTo" v-model="priceTo" />
-
-        <label for="yearFrom">Rok produkcji od</label>
-        <input type="number" id="yearFrom" v-model="yearFrom" />
-
-        <label for="yearTo">Rok produkcji do</label>
-        <input type="number" id="yearTo" v-model="yearTo" />
-
-        <label for="fuelType">Rodzaj paliwa</label>
-        <input type="text" id="fuelType" v-model="fuelType" />
-
-        <label for="mileageFrom">Przebieg od</label>
-        <input type="number" id="mileageFrom" v-model="mileageFrom" />
-
-        <label for="mileageTo">Przebieg do</label>
-        <input type="number" id="mileageTo" v-model="mileageTo" />
-
-        <label for="location">Lokalizacja</label>
-        <input type="text" id="location" v-model="location" />
-
-        <label for="damage">Stan uszkodzeń</label>
-        <input type="text" id="damage" v-model="damage" />
-
-        <label for="details">Wpisz model, wersję lub inne szczegóły</label>
-        <input type="text" id="details" v-model="details" />
-
-        <label for="financing">Możliwość finansowania</label>
-        <input type="checkbox" id="financing" v-model="financing" />
-
-        <label for="specialPrograms">Programy specjalne</label>
-        <input type="checkbox" id="specialPrograms" v-model="specialPrograms" />
-
-        <button @click="applyFilters">Wyszukaj</button>
+        <input type="text" id="model" v-model="model" /><br>
+        <label for="cena">Cena</label>
+        <input type="number" id="cena" v-model="cena" /><br>
+        <label for="rok">Rok </label>
+        <input type="number" id="rok" v-model="rok" />
+        </div>
         </div>
         <div class="boxes">
-          <div class="row">
-        
+            <div class="row" v-for="car in (filteredCars.length > 0 ? filteredCars : cars)" :key="car.id" style=" display: inline-block; width: 18%; margin: 5px 5px 5px 5px;">
                       <router-view>
-                      <div class="col-lg-3">
+                      <div>
                           <div class="item">
-                              <div class="photo">
-                                  <img src="../assets/car.png" alt="">
-                              </div>
+                            <div class="photo">
+                              <img :src="'data:image/jpeg;base64,' + car.obraz" alt="Car Photo" />
+
+            </div>
                               <router-link to="" replace></router-link>
-                              <h2>Marka: Peugeot<br>
-                              Model: Inception
-                              Rok produkcji: 2023<br>
-                              Moc silnika: 566 kW<br>
-                              Klimatyzacja: Yes<br>
-                              Cena: 2 600 000 USD <br>
+                            
+                              <h2>Marka: {{ car.marka }}<br>
+                              Model: {{ car.model }}<br>
+                              Rok produkcji: {{ car.rok }}<br>
+                              Moc silnika: {{ car.moc_silnika }}<br>
+                              Klimatyzacja: {{ car.klimatyzacja }}<br>
+                              Cena:{{ car.cena }} <br>
+                              Typ: {{ car.typ }}<br>
                               <button><h1> Buy now!</h1></button></h2>
                               
                           </div>
                       </div>
-                      <div class="col-lg-3">
-                          <div class="item">
-                              <div class="photo">
-                                  <img src="../assets/fiat.jpg" alt="">
-                              </div>
-                              <router-link   to="" replace></router-link>
-                              <h2>Marka: Fiat<br>
-                              Model: 126p
-                              Rok produkcji: 2023<br>
-                              Moc silnika: 106 kW<br>
-                              Klimatyzacja: Yes<br>
-                              Cena: 45 000 USD <br>
-                              <button><h1> Buy now!</h1></button></h2>
-                          </div>
-                      </div>
-                      <div class="col-lg-3">
-                          <div class="item">
-                              <div class="photo">
-                                  <img src="../assets/tesla.jpg" alt="">
-                              </div>
-                              <router-link   to="" replace> </router-link>
-                              <h2>Marka: Tesla<br>
-                              Model: Cybertruck<br>
-                              Rok produkcji: 2023<br>
-                              Moc silnika: 766 kW<br>
-                              Klimatyzacja: Yes<br>
-                              Cena: 1 750 000 USD <br>
-                              <button><h1> Buy now!</h1></button></h2>
-                          </div>
-                      </div>
-                      <div class="col-lg-3">
-                          <div class="item">
-                              <div class="photo">
-                                  <img src="../assets/nissan.png" alt="">
-                              </div>
-                              <router-link   to="" replace></router-link>
-                              <h2>Marka: Nissan<br>
-                              Model:HYPER FORCE<br>
-                              Rok produkcji: 2023<br>
-                              Moc silnika: 896 kW<br>
-                              Klimatyzacja: Yes<br>
-                              Cena: 4 200 000 USD <br>
-                              <button><h1> Buy now!</h1></button></h2>
-                          </div>
-                      </div>
-                      <div class="col-lg-3">
-                          <div class="item">
-                              <div class="photo">
-                                  <img src="../assets/merc.jpg" alt="">
-                              </div>
-                              <router-link to="" replace></router-link>
-                              <h2>Marka: Mercedes<br>
-                              Model: Vision AVTR<br>
-                              Rok produkcji: 2023<br>
-                              Moc silnika: 744 kW<br>
-                              Klimatyzacja: Yes<br>
-                              Cena: 1 800 000 USD <br>
-                              <button><h1> Buy now!</h1></button></h2>
-                              
-                          </div>
-                      </div>
-                      <div class="col-lg-3">
-                          <div class="item">
-                              <div class="photo">
-                                  <img src="../assets/lincoln.jpg" alt="">
-                              </div>
-                              <router-link   to="" replace></router-link>
-                              <h2>Marka: Ford<br>
-                              Model: Lincoln<br>
-                              Rok produkcji: 2023<br>
-                              Moc silnika: 589 kW<br>
-                              Klimatyzacja: Yes<br>
-                              Cena: 2 150 000 USD <br>
-                              <button><h1> Buy now!</h1></button></h2>
-                          </div>
-                      </div>
-                      <div class="col-lg-3">
-                          <div class="item">
-                              <div class="photo">
-                                  <img src="../assets/cupra.jpg" alt="">
-                              </div>
-                              <router-link   to="" replace> </router-link>
-                              <h2>Marka: Cupra<br>
-                              Model: Darkrebel<br>
-                              Rok produkcji: 2023<br>
-                              Moc silnika: 1020 kW<br>
-                              Klimatyzacja: Yes<br>
-                              Cena: 8 900 000 USD <br>
-                              <button><h1> Buy now!</h1></button></h2>
-                          </div>
-                      </div>
-                      <div class="col-lg-3">
-                          <div class="item">
-                              <div class="photo">
-                                  <img src="../assets/nissa.jpg" alt="">
-                              </div>
-                              <router-link   to="" replace></router-link>
-                              <h2>Marka: Nissan<br>
-                              Model:HYPER<br>
-                              Rok produkcji: 2023<br>
-                              Moc silnika: 666 kW<br>
-                              Klimatyzacja: Yes<br>
-                              Cena: 1 730 000 USD <br>
-                              <button><h1> Buy now!</h1></button></h2>
-                          </div>
-                      </div>
+                    
                      
                      
                       </router-view>           
@@ -243,6 +201,8 @@ const openChoiceDialog = () => {
       <div class="text-center text-white p-3" style="background-color: #dc143c;">
         © 2023 Copyright:
         <a class="text-white" href="">MiraiArashi.com</a>
+    
+    
       </div>
       <!-- Copyright -->
     </footer>
@@ -332,27 +292,35 @@ const openChoiceDialog = () => {
   }
 
   /* Boxes styles */
-  .sidebar {
+ /* Boxes styles */
+ .sidebar {
   float: left;
   background-color: #dc143c;
   width: 20%;
-  height: 67.1vw;
+  height: 100%;
   margin-top: 30px;
   padding: 20px;
   color: white;
+}
+
+.filter-item {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 15px;
 }
 
 /* Stylizacja dla formularza filtrów */
 .sidebar form {
   display: flex;
   flex-direction: column;
-  float:right;
+  float: right;
 }
 
 .sidebar label {
   margin-top: 10px;
   font-weight: bold;
-  float:left;
+  padding: 8px;
+  float: left;
 }
 
 .sidebar input,
@@ -368,8 +336,8 @@ const openChoiceDialog = () => {
   color: white;
   cursor: pointer;
   border: none;
-  float:right;
-  margin-top: 50px;
+  float: right;
+  margin-top: 20px;
 }
   .background {
     background-color: #000000;

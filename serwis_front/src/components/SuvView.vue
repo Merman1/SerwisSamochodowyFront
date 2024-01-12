@@ -2,7 +2,6 @@
 <script setup>
 import { RouterLink, RouterView } from "vue-router";
 import { ref } from 'vue';
-
 import ChoiceDialog from "@/components/ChoiceDialog.vue";
 
 const showChoiceDialog = ref(false);
@@ -17,7 +16,7 @@ import axios from 'axios';
 
 export default {
 
-  name: "SedanView",
+  name: "SuvView",
 
   data() {
     return {
@@ -32,9 +31,9 @@ export default {
       dostepny:'',
       obraz:'',
       klimatyzacja:'',
+      typ:'suv',
       cars:[],
       filteredCars: [],
-      typ: 'sedan',
     };
   },
 
@@ -85,6 +84,7 @@ export default {
           car.rok.toString().includes(this.rok) &&
           car.cena.toString().includes(this.cena) &&
           (this.typ === '' || car.typ.toLowerCase() === this.typ.toLowerCase()) // Dodaj ten warunek
+   
         );
       }
     },
@@ -100,6 +100,7 @@ export default {
     model: 'applyFilters',
     rok: 'applyFilters',
     cena: 'applyFilters',
+    typ: 'applyFilters'
   },
 
 };
@@ -170,13 +171,15 @@ export default {
             </div>
                               <router-link to="" replace></router-link>
                             
-                              <h2>Marka: {{ car.marka }}<br>
+                              <h2>Marka: {{ car.marka }}</h2><br>
                               Model: {{ car.model }}<br>
                               Rok produkcji: {{ car.rok }}<br>
                               Moc silnika: {{ car.moc_silnika }}<br>
                               Klimatyzacja: {{ car.klimatyzacja }}<br>
                               Cena:{{ car.cena }} <br>
-                              <button><h1> Buy now!</h1></button></h2>
+                              Typ: {{ car.typ }}<br>
+                              <button ><h1> Buy now!</h1></button>
+                              
                               
                           </div>
                       </div>
@@ -193,7 +196,6 @@ export default {
 </div>
 <footer class="text-center text-lg-start" style="background-color: #000000;">
       <div class="container d-flex justify-content-center py-5">
-        
       </div>
       <!-- Copyright -->
       <div class="text-center text-white p-3" style="background-color: #dc143c;">
@@ -290,8 +292,7 @@ export default {
   }
 
   /* Boxes styles */
- /* Boxes styles */
- .sidebar {
+  .sidebar {
   float: left;
   background-color: #dc143c;
   width: 20%;

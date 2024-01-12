@@ -10,26 +10,21 @@ export default {
   },
   methods: {
     async login() {
-      // Implement login logic here
-      try {
-        // Make a request to your backend for authentication
-        // You can use Axios or Fetch API
+    try {
         const response = await axios.post("/api/auth/signin", {
-          username: this.username,
-          password: this.password,
-          
+            username: this.username,
+            password: this.password,
         });
 
-        // Handle the response, e.g., store the JWT token in local storage
-        const token = response.data.token;
+        const token = response.data.accessToken; // Poprawiona linia, aby uzyskać token
+        console.log('Received token:', token);
         localStorage.setItem("token", token);
+        console.log('Token from localStorage:', token);
         this.$router.push("/home");
-        // Redirect the user or perform other actions
-      } catch (error) {
+    } catch (error) {
         console.error("Login failed", error);
-        // Handle login failure, show an error message, etc.
-      }
-    },
+    }
+},
   },
 };
 </script>

@@ -39,9 +39,7 @@ export default {
   </head>
   
   <body>
-    <div v-if="authorized" class="alert alert-success" role="alert">
-  Autoryzacja udana! Witaj w strefie bezpiecznej.
-</div>
+ 
       <div class="slider" >
         
           <div id="nav">
@@ -73,8 +71,8 @@ export default {
                               <div class="photo">
                                   <img src="../assets/Sport.jpg" alt="">
                               </div>
-                              <router-link   to="" replace></router-link>
-                              <h2>Sport</h2>
+                              <router-link style="text-decoration: none; color: inherit;" to="/sport" replace><h2>Sport</h2></router-link>
+                              
                           </div>
                       </div>
                       <div class="col-lg-3">
@@ -144,9 +142,7 @@ export default {
 </div>
 <footer class="text-center text-lg-start" style="background-color: #000000;">
       <div class="container d-flex justify-content-center py-5">
-        <div v-if="authorized" class="alert alert-success" role="alert">
-          Autoryzacja udana! Witaj w strefie bezpiecznej.
-        </div>
+       
       </div>
       <!-- Copyright -->
       <div class="text-center text-white p-3" style="background-color: #dc143c;">

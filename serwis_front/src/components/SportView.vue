@@ -17,7 +17,7 @@ import axios from 'axios';
 
 export default {
 
-  name: "SedanView",
+  name: "SportView",
 
   data() {
     return {
@@ -32,9 +32,9 @@ export default {
       dostepny:'',
       obraz:'',
       klimatyzacja:'',
+      typ:'sport',
       cars:[],
       filteredCars: [],
-      typ: 'sedan',
     };
   },
 
@@ -85,6 +85,7 @@ export default {
           car.rok.toString().includes(this.rok) &&
           car.cena.toString().includes(this.cena) &&
           (this.typ === '' || car.typ.toLowerCase() === this.typ.toLowerCase()) // Dodaj ten warunek
+   
         );
       }
     },
@@ -100,6 +101,7 @@ export default {
     model: 'applyFilters',
     rok: 'applyFilters',
     cena: 'applyFilters',
+    typ: 'applyFilters'
   },
 
 };
@@ -176,6 +178,7 @@ export default {
                               Moc silnika: {{ car.moc_silnika }}<br>
                               Klimatyzacja: {{ car.klimatyzacja }}<br>
                               Cena:{{ car.cena }} <br>
+                              Typ: {{ car.typ }}<br>
                               <button><h1> Buy now!</h1></button></h2>
                               
                           </div>
@@ -193,7 +196,6 @@ export default {
 </div>
 <footer class="text-center text-lg-start" style="background-color: #000000;">
       <div class="container d-flex justify-content-center py-5">
-        
       </div>
       <!-- Copyright -->
       <div class="text-center text-white p-3" style="background-color: #dc143c;">
@@ -289,7 +291,6 @@ export default {
     color: rgb(4, 41, 4);
   }
 
-  /* Boxes styles */
  /* Boxes styles */
  .sidebar {
   float: left;
