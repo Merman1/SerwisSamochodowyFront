@@ -1,30 +1,56 @@
 <script>
 import axios from "axios";
 axios.defaults.baseURL = "http://localhost:8000";
+
 export default {
   data() {
     return {
       username: "",
       password: "",
+      user: {
+        // Dodaj więcej właściwości według potrzeb
+        username: "",
+        email: "",
+        // Dodaj inne właściwości użytkownika z modelu backendowego
+      },
     };
   },
   methods: {
     async login() {
     try {
-        const response = await axios.post("/api/auth/signin", {
-            username: this.username,
-            password: this.password,
+      const response = await axios.post("/api/auth/signin", {
+        username: this.username,
+        password: this.password,
+      });
+
+      const token = response.data.accessToken;
+      console.log('Received token:', token);
+      localStorage.setItem("token", token);
+
+      // Assuming your backend provides user data upon successful login
+         
+
+    // Przekierowanie użytkownika do trasy "/home"
+    this.$router.push("/home");
+    } catch (error) {
+      console.error("Login failed", error);
+    }
+  },
+    async fetchLoggedInUser() {
+      try {
+        const response = await axios.get("/api/auth/user", {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
         });
 
-        const token = response.data.accessToken; // Poprawiona linia, aby uzyskać token
-        console.log('Received token:', token);
-        localStorage.setItem("token", token);
-        console.log('Token from localStorage:', token);
-        this.$router.push("/home");
-    } catch (error) {
-        console.error("Login failed", error);
-    }
-},
+        // Ustaw dane użytkownika w komponencie
+        this.user = response.data;
+        console.log('User data:', this.user);
+      } catch (error) {
+        console.error("Error fetching user data", error);
+      }
+    },
   },
 };
 </script>

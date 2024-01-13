@@ -32,9 +32,9 @@ export default {
       dostepny:'',
       obraz:'',
       klimatyzacja:'',
-      typ:'sport',
       cars:[],
       filteredCars: [],
+      typ: 'sport',
     };
   },
 
@@ -85,7 +85,6 @@ export default {
           car.rok.toString().includes(this.rok) &&
           car.cena.toString().includes(this.cena) &&
           (this.typ === '' || car.typ.toLowerCase() === this.typ.toLowerCase()) // Dodaj ten warunek
-   
         );
       }
     },
@@ -101,7 +100,6 @@ export default {
     model: 'applyFilters',
     rok: 'applyFilters',
     cena: 'applyFilters',
-    typ: 'applyFilters'
   },
 
 };
@@ -126,7 +124,7 @@ export default {
     <div v-if="authorized" class="alert alert-success" role="alert">
   Autoryzacja udana! Witaj w strefie bezpiecznej.
 </div>
-      <div class="slider" >
+<div class="slider" @click="$router.push('/home')">
         <router-view @authenticated="setAuthenticated">
         
           <div id="nav">
@@ -137,8 +135,8 @@ export default {
           </div>
         </router-view>
       </div>
-  <div class="links">
-    <router-link style="text-decoration: none; color: inherit;"  to="/home" replace><h3>HOME</h3></router-link><br>
+      <div class="links">
+    <router-link style="text-decoration: none; color: inherit;"  to="/cat" replace><h3>CATEGORY</h3></router-link><br>
     <router-link style="text-decoration: none; color: inherit;"  to="/future" replace><h3>FUTURISTIC</h3></router-link>
     <router-link style="text-decoration: none; color: inherit;"  to="/sport" replace><h3>SPORT</h3></router-link>
     <router-link style="text-decoration: none; color: inherit;"  to="/muscle" replace><H3>MUSCLE</H3></router-link>
@@ -178,7 +176,6 @@ export default {
                               Moc silnika: {{ car.moc_silnika }}<br>
                               Klimatyzacja: {{ car.klimatyzacja }}<br>
                               Cena:{{ car.cena }} <br>
-                              Typ: {{ car.typ }}<br>
                               <button><h1> Buy now!</h1></button></h2>
                               
                           </div>
@@ -196,6 +193,7 @@ export default {
 </div>
 <footer class="text-center text-lg-start" style="background-color: #000000;">
       <div class="container d-flex justify-content-center py-5">
+        
       </div>
       <!-- Copyright -->
       <div class="text-center text-white p-3" style="background-color: #dc143c;">
@@ -291,6 +289,7 @@ export default {
     color: rgb(4, 41, 4);
   }
 
+  /* Boxes styles */
  /* Boxes styles */
  .sidebar {
   float: left;

@@ -124,7 +124,7 @@ export default {
     <div v-if="authorized" class="alert alert-success" role="alert">
   Autoryzacja udana! Witaj w strefie bezpiecznej.
 </div>
-      <div class="slider" >
+<div class="slider" @click="$router.push('/home')">
         <router-view @authenticated="setAuthenticated">
         
           <div id="nav">
@@ -135,8 +135,8 @@ export default {
           </div>
         </router-view>
       </div>
-  <div class="links">
-    <router-link style="text-decoration: none; color: inherit;"  to="/home" replace><h3>HOME</h3></router-link><br>
+      <div class="links">
+    <router-link style="text-decoration: none; color: inherit;"  to="/cat" replace><h3>CATEGORY</h3></router-link><br>
     <router-link style="text-decoration: none; color: inherit;"  to="/future" replace><h3>FUTURISTIC</h3></router-link>
     <router-link style="text-decoration: none; color: inherit;"  to="/sport" replace><h3>SPORT</h3></router-link>
     <router-link style="text-decoration: none; color: inherit;"  to="/muscle" replace><H3>MUSCLE</H3></router-link>

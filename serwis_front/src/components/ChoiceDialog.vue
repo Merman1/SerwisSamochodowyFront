@@ -1,7 +1,7 @@
 <template>
   <div class="choice-dialog">
     <p>Wybierz:</p>
-    <p v-if="userEmail">Zalogowany email: {{ userEmail }}</p>
+
     <button @click="goTo('/profil')">Profil</button>
     <button @click="logout">Wyloguj</button>
   </div>

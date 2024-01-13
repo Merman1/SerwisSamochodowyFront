@@ -3,25 +3,40 @@
 import { RouterLink, RouterView } from "vue-router";
 import { ref } from 'vue';
 import ChoiceDialog from "@/components/ChoiceDialog.vue";
-
+import CarDetails from "@/components/CarDetails.vue";
 const showChoiceDialog = ref(false);
+const showCarDetails = ref(false);
 
 const openChoiceDialog = () => {
   showChoiceDialog.value = true;
 };
+
+
+const openCarDetails = (car) => {
+  // Otwórz okno dialogowe z detalami samochodu
+  showCarDetails.value = car;
+  
+};
+
+const closeCarDetails = () => {
+  // Zamknij okno dialogowe z detalami samochodu
+  showCarDetails.value = false;
+};
+
+
 </script>
 
 <script>
 import axios from 'axios';
 
 export default {
-
+  
   name: "SuvView",
 
   data() {
     return {
       baseURL: "http://localhost:8000",
-      
+      selectedCar: null,
       marka: '',
       model:'',
       rok:'',
@@ -42,6 +57,7 @@ export default {
     try {
         const token = localStorage.getItem("token");
         console.log("Token from localStorage:", token);
+        
         const response = await axios.get(`${this.baseURL}/api/auth/cars`, {
           timeout: 30000,
             headers: {
@@ -49,13 +65,19 @@ export default {
             }
         });
 
-        this.cars = response.data;
+        this.cars = response.data.map(car => {
+      return {
+        ...car,
+        obraz: car.obraz // Dodaj tę linię, zakładając, że obraz jest właściwością samochodu
+      };
+    });
+
         this.applyFilters();
     } catch (error) {
         console.error("Failed to fetch cars", error);
     }
 },
-    
+
     checkAuthentication() {
       const token = localStorage.getItem("token");
       if (!token) {
@@ -122,10 +144,7 @@ export default {
   </head>
   
   <body>
-    <div v-if="authorized" class="alert alert-success" role="alert">
-  Autoryzacja udana! Witaj w strefie bezpiecznej.
-</div>
-      <div class="slider" >
+    <div class="slider" @click="$router.push('/home')">
         <router-view @authenticated="setAuthenticated">
         
           <div id="nav">
@@ -137,7 +156,7 @@ export default {
         </router-view>
       </div>
   <div class="links">
-    <router-link style="text-decoration: none; color: inherit;"  to="/home" replace><h3>HOME</h3></router-link><br>
+    <router-link style="text-decoration: none; color: inherit;"  to="/cat" replace><h3>CATEGORY</h3></router-link><br>
     <router-link style="text-decoration: none; color: inherit;"  to="/future" replace><h3>FUTURISTIC</h3></router-link>
     <router-link style="text-decoration: none; color: inherit;"  to="/sport" replace><h3>SPORT</h3></router-link>
     <router-link style="text-decoration: none; color: inherit;"  to="/muscle" replace><H3>MUSCLE</H3></router-link>
@@ -171,15 +190,17 @@ export default {
             </div>
                               <router-link to="" replace></router-link>
                             
-                              <h2>Marka: {{ car.marka }}</h2><br>
+                            <h2>  Marka: {{ car.marka }}<br>
                               Model: {{ car.model }}<br>
                               Rok produkcji: {{ car.rok }}<br>
                               Moc silnika: {{ car.moc_silnika }}<br>
                               Klimatyzacja: {{ car.klimatyzacja }}<br>
                               Cena:{{ car.cena }} <br>
                               Typ: {{ car.typ }}<br>
-                              <button ><h1> Buy now!</h1></button>
-                              
+                              <button @click="openCarDetails(car)"><h1> Zobacz!</h1></button>
+                              <car-details v-if="showCarDetails === car" :car="car" @close="closeCarDetails" />
+</h2>
+
                               
                           </div>
                       </div>

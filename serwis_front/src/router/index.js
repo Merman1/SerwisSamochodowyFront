@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import HomeView from '../components/HomeView.vue';
+import CategoView from '../components/CategoView.vue';
 import FuturisticView from '../components/FuturisticView.vue';
 import ProfileView from '../components/ProfileView.vue';
 import LoginView from '../components/LoginView.vue';
@@ -9,14 +9,15 @@ import MuscleView from '../components/MuscleView.vue';
 import CmuscleView from '../components/CmuscleView.vue';
 import SuvView from '../components/SuvView.vue';
 import ClassicView from '../components/ClassicView.vue';
-
-
+import HomeView from '../components/HomeView.vue'
+import CarDetails from '../components/CarDetails.vue'
+import CartView from '../components/CartView.vue'
 
 const routes = [
   {
-    path: '/home',
-    name: 'home',
-    component: HomeView,
+    path: '/cat',
+    name: 'car',
+    component: CategoView,
   },
   {
     path: '/future',
@@ -26,7 +27,9 @@ const routes = [
   {
     path: '/profil',
     name: 'profil',
-    component: ProfileView
+    component: ProfileView,
+    meta: { requiresAuth: true }, // Dodaj meta, aby sprawdzić autentykację
+  
   },
   {
     path: '/login',
@@ -62,7 +65,24 @@ const routes = [
     path: '/classic',
     name: 'classic',
     component: ClassicView
-  }
+  },
+  {
+    path: '/home',
+    name: 'home',
+    component: HomeView,
+    
+  },
+  {
+    path: '/car-details/:carId', // Tutaj używamy dynamicznego parametru carId
+    name: 'carDetails',
+    component: CarDetails,
+  },
+  {
+    path: '/cart',
+    name: 'cart',
+    component: CartView,
+    
+  },
 
  
 ];

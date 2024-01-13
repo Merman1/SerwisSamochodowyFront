@@ -1,18 +1,29 @@
-
-
-
-
 <script setup>
-import { RouterLink, RouterView } from "vue-router";
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
+import axios from 'axios';
 
+const user = ref({});
 
+// Dodaj metodę do pobierania danych użytkownika
+const fetchLoggedInUser = async () => {
+  try {
 
-const showChoiceDialog = ref(false);
-
-const openChoiceDialog = () => {
-  showChoiceDialog.value = true;
+    // Dodaj endpoint, który pobierze dane zalogowanego użytkownika z twojego backendu
+    const response = await axios.get('http://localhost:8000/api/auth/user', {
+  headers: {
+    Authorization: `Bearer ${localStorage.getItem("token")}`
+  }
+});
+    user.value = response.data;
+  } catch (error) {
+    console.error('Error fetching user data:', error);
+  }
 };
+
+onMounted(() => {
+  // Wywołaj metodę fetchLoggedInUser po zamontowaniu komponentu
+  fetchLoggedInUser();
+});
 </script>
 <template>
           
@@ -27,7 +38,7 @@ const openChoiceDialog = () => {
   </head>
   
   <body>
-      <div class="slider" >
+    <div class="slider" @click="$router.push('/home')">
         <router-view @authenticated="setAuthenticated">
         
           <div id="nav">
@@ -39,39 +50,26 @@ const openChoiceDialog = () => {
         </router-view>
       </div>
   <div class="links">
-    <router-link style="text-decoration: none; color: inherit;"  to="/home" replace><h3>HOME</h3></router-link><br>
+    <router-link style="text-decoration: none; color: inherit;"  to="/cat" replace><h3>CATEGORY</h3></router-link><br>
     <router-link style="text-decoration: none; color: inherit;"  to="/future" replace><h3>FUTURISTIC</h3></router-link>
-    <router-link style="text-decoration: none; color: inherit;"  to="" replace><h3>SPORT</h3></router-link>
-    <router-link style="text-decoration: none; color: inherit;"  to="" replace><H3>MUSCLE</H3></router-link>
-    <router-link style="text-decoration: none; color: inherit;"  to="" replace><H3>CLASSIC MUSCLE</H3></router-link>
-    <router-link style="text-decoration: none; color: inherit;"  to="" replace><h3>SUV</h3></router-link>
-    <router-link style="text-decoration: none; color: inherit;"  to="" replace><H3>SEDAN</H3></router-link>
-    <router-link style="text-decoration: none; color: inherit;"  to="" replace><H3>CLASSIC</H3></router-link>
+    <router-link style="text-decoration: none; color: inherit;"  to="/sport" replace><h3>SPORT</h3></router-link>
+    <router-link style="text-decoration: none; color: inherit;"  to="/muscle" replace><H3>MUSCLE</H3></router-link>
+    <router-link style="text-decoration: none; color: inherit;"  to="/cmuscle" replace><H3>CLASSIC MUSCLE</H3></router-link>
+    <router-link style="text-decoration: none; color: inherit;"  to="/suv" replace><h3>SUV</h3></router-link>
+    <router-link style="text-decoration: none; color: inherit;"  to="/sedan" replace><H3>SEDAN</H3></router-link>
+    <router-link style="text-decoration: none; color: inherit;"  to="/classic" replace><H3>CLASSIC</H3></router-link>
   </div>
       <div class="background">
         <div class="sidebar">
         <h2>Edytowanie profilu</h2>
         <!-- Filtry -->
-        <label for="Imie">Imie</label>
-        <input type="text" id="Imie" v-model="Imie" />
-
-        <label for="Nazwisko">Nazwisko</label>
-        <input type="text" id="NAzwisko" v-model="Nazwisko" />
+        <label for="Username">Username</label>
+        <input type="text" id="Username" v-model="username" />
 
         <label for="Email">Email</label>
-        <input type="text" id="Email" v-model="Email" />
+        <input type="text" id="Email" v-model="email" />
 
-        <label for="Haslo">Hasło</label>
-        <input type="text" id="Haslo" v-model="Haslo" />
-
-        <label for="Adres">Adres</label>
-        <input type="number" id="Adres" v-model="Adres" />
-
-        <label for="Telefon">Telefon</label>
-        <input type="number" id="Telefon" v-model="Telefon" />
-
-        <label for="Ulubione">Ulubione</label>
-        <input type="number" id="Ulubione" v-model="Ulubione" />
+        
        <br>
 
         <button @click="applyFilters">Edytuj</button>
@@ -86,33 +84,19 @@ const openChoiceDialog = () => {
           <div class="profile-info">
             <h1>Profil</h1>
             <br>
-            <div class="profile-details">
-              <div class="profile-detail">
-                <label for="brand">Imie:</label>
-                <p>Jarosław</p>
-              </div>
-              <div class="profile-detail">
-                <label for="model">Nazwisko:</label>
-                <p>Kot</p>
-              </div>
-              <div class="profile-detail">
-                <label for="generation">Adres:</label>
-                <p>Wierna Rzeka</p>
-              </div>
-              <div class="profile-detail">
-                <label for="generation">Email:</label>
-                <p>jarek@gmail.pl</p>
-              </div>
-              <div class="profile-detail">
-                <label for="generation">Telefon:</label>
-                <p>12345678</p>
-              </div>
-              <div class="profile-detail">
-                <label for="generation">Ulubiony rodzaj pojazdu:</label>
-                <p>Futuristic</p>
-              </div>
-              <!-- Add similar blocks for other profile details -->
-            </div>
+            <div v-if="user">
+  <div class="profile-details">
+    <div class="profile-detail">
+      <label for="username">Username:</label>
+      <p>{{ user.username }}</p>
+    </div>
+    <div class="profile-detail">
+      <label for="email">Email:</label>
+      <p>{{ user.email }}</p>
+    </div>
+    <!-- Add similar blocks for other properties -->
+  </div>
+  </div>
           </div>
         </div>
       </div>
@@ -223,7 +207,7 @@ const openChoiceDialog = () => {
   float: left;
   background-color: #dc143c;
   width: 20%;
-  height: 67.1vw;
+  height: 15.1vw;
   margin-top: 30px;
   padding: 20px;
   color: white;
@@ -260,7 +244,7 @@ const openChoiceDialog = () => {
 }
   .background {
     background-color: #000000;
-    height: 1200px;
+    height: 500px;
     width: 100%;
   }
 
