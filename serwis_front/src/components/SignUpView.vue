@@ -1,65 +1,33 @@
+
 <script>
-import axios from "axios";
-axios.defaults.baseURL = "http://localhost:8000";
+import axios from 'axios';
 
 export default {
   data() {
     return {
-      username: "",
-      password: "",
-      user: {
-        username: "",
-        email: "",
-      },
+      username: '',
+      password: '',
+      email: ''
     };
   },
   methods: {
-    async login() {
-    try {
-      const response = await axios.post("/api/auth/signin", {
+    registerUser() {
+      axios.post('http://localhost:8000/api/auth/signup', {
         username: this.username,
         password: this.password,
+        email: this.email
+      })
+      .then(response => {
+        console.log(response.data);
+        this.$router.push("/login");
+      })
+      .catch(error => {
+        console.error(error.response.data);
       });
-      
-
-      const token = response.data.accessToken;
-      console.log('Received token:', token);
-      localStorage.setItem("token", token);
-
-      const userIdResponse = await axios.get("/api/auth/user", {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
-      const userId = userIdResponse.data.id;
-
-      localStorage.setItem("userId", userId);
-
-    this.$router.push("/home");
-    } catch (error) {
-      console.error("Login failed", error);
     }
-  },
-  goToRegister() {
-      this.$router.push("/register");
-    },
-    async fetchLoggedInUser() {
-      try {
-        const response = await axios.get("/api/auth/user", {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
-        this.user = response.data;
-        console.log('User data:', this.user);
-      } catch (error) {
-        console.error("Error fetching user data", error);
-      }
-    },
-  },
+  }
 };
 </script>
-
 <template>
           
   <head>
@@ -79,22 +47,24 @@ export default {
   
       <div class="background">
         
-         <div class="login-container">
-                    <h2>Login</h2>
-                    <form @submit.prevent="login">
-                        <div class="form-group">
-                            <label for="username">Username:</label>
-                            <input type="text" id="username" v-model="username" required />
-                        </div>
-                        <div class="form-group">
-                            <label for="password">Password:</label>
-                            <input type="password" id="password" v-model="password" required />
-                        </div>
-                        <button type="submit">Login</button>
-                        <button type="button" @click="goToRegister">Register</button>
-                    </form>
-                </div>
-
+        <div class="registration-form">
+    <h2>Registration</h2>
+    <form @submit.prevent="registerUser">
+        <div class="form-group">
+        <label for="email">Email:</label>
+        <input v-model="email" type="text" id="email" required />
+      </div>
+      <div class="form-group">
+        <label for="username">Username:</label>
+        <input v-model="username" type="text" id="username" required />
+      </div>
+      <div class="form-group">
+        <label for="password">Password:</label>
+        <input v-model="password" type="password" id="password" required />
+      </div>
+      <button type="submit">Register</button>
+    </form>
+  </div>
 </div>
 <footer class="text-center text-lg-start" style="background-color: #000000;">
       <div class="container d-flex justify-content-center py-5">
@@ -116,7 +86,7 @@ export default {
   font-family: 'Arial', sans-serif;
   overflow-x: hidden; 
 }
-.login-container {
+.registration-form {
   background-color: black;
   color: white;
   padding: 20px;
@@ -126,7 +96,7 @@ export default {
   height: 500px;
 }
 
-.login-container input {
+.registration-form input {
   background-color: white;
   color: black;
   border: 2px solid red; 
@@ -134,31 +104,31 @@ export default {
   padding: 20px;
   margin: 5px;
 }
-.login-container label {
-  display: block; 
-  margin-bottom: 5px; 
-}
-.login-container button {
+
+.registration-form button {
   background-color: red; 
   color: white;
   border: 2px solid red; 
   border-radius: 5px;
   padding: 10px 20px;
   margin-top: 10px;
-  margin: 10px;
   cursor: pointer;
   transition: background-color 0.3s, color 0.3s, border-color 0.3s;
 }
-.login-container h2 {
-  font-size: 36px;
-  color: red; 
+.registration-form h2 {
+  font-size: 36px; 
+  color: red;
   text-shadow: 0px 0px 10px red; 
 }
-.login-container button:hover {
+
+.registration-form button:hover {
   background-color: darkred; 
   border-color: darkred;
 }
-
+.registration-form label {
+  display: block; 
+  margin-bottom: 5px; 
+}
 .slider {
   background-image: url('~@/assets/MiraiArashi2.png');
   background-repeat: no-repeat;

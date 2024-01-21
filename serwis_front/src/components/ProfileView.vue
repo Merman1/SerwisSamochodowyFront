@@ -4,11 +4,9 @@ import axios from 'axios';
 
 const user = ref({});
 
-// Dodaj metodę do pobierania danych użytkownika
 const fetchLoggedInUser = async () => {
   try {
 
-    // Dodaj endpoint, który pobierze dane zalogowanego użytkownika z twojego backendu
     const response = await axios.get('http://localhost:8000/api/auth/user', {
   headers: {
     Authorization: `Bearer ${localStorage.getItem("token")}`
@@ -21,7 +19,6 @@ const fetchLoggedInUser = async () => {
 };
 
 onMounted(() => {
-  // Wywołaj metodę fetchLoggedInUser po zamontowaniu komponentu
   fetchLoggedInUser();
 });
 </script>
@@ -62,7 +59,6 @@ onMounted(() => {
       <div class="background">
         <div class="sidebar">
         <h2>Edytowanie profilu</h2>
-        <!-- Filtry -->
         <label for="Username">Username</label>
         <input type="text" id="Username" v-model="username" />
 
@@ -94,7 +90,6 @@ onMounted(() => {
       <label for="email">Email:</label>
       <p>{{ user.email }}</p>
     </div>
-    <!-- Add similar blocks for other properties -->
   </div>
   </div>
           </div>
@@ -110,12 +105,10 @@ onMounted(() => {
 <footer class="text-center text-lg-start" style="background-color: #000000;">
       <div class="container d-flex justify-content-center py-5">
       </div>
-      <!-- Copyright -->
       <div class="text-center text-white p-3" style="background-color: #dc143c;">
         © 2023 Copyright:
         <a class="text-white" href="">MiraiArashi.com</a>
       </div>
-      <!-- Copyright -->
     </footer>
 
 </body>
@@ -146,7 +139,6 @@ onMounted(() => {
   text-decoration: none;
   margin-top: 10px;
 }
-/* Slider styles */
 .slider {
   background-image: url('~@/assets/MiraiArashi2.png');
   background-repeat: no-repeat;
@@ -202,7 +194,6 @@ onMounted(() => {
     color: rgb(4, 41, 4);
   }
 
-  /* Boxes styles */
   .sidebar {
   float: left;
   background-color: #dc143c;
@@ -213,7 +204,6 @@ onMounted(() => {
   color: white;
 }
 
-/* Stylizacja dla formularza filtrów */
 .sidebar form {
   display: flex;
   flex-direction: column;
@@ -290,7 +280,6 @@ color:white;
     object-fit: cover;
   }
 
-  /* Footer styles */
   footer {
     background-color: #000000;
   }
@@ -307,7 +296,6 @@ color:white;
     font-size: 40px;
   }
 
-  /* Container styles */
   .container {
     width: 50%;
     height: 100%;

@@ -13,16 +13,30 @@ const openChoiceDialog = () => {
 
 
 const openCarDetails = (car) => {
-  // Otwórz okno dialogowe z detalami samochodu
-  showCarDetails.value = car;
-  
+  showCarDetails.value = car; 
+};
+const recentlyViewedCars = ref([]);
+const baseURL = "http://localhost:8000";
+
+const getRecentlyViewedCars = async () => {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await axios.get(`${baseURL}/api/auth/recently-viewed`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    recentlyViewedCars.value = response.data;
+  } catch (error) {
+    console.error("Failed to fetch recently viewed cars", error);
+  }
 };
 
 const closeCarDetails = () => {
-  // Zamknij okno dialogowe z detalami samochodu
   showCarDetails.value = false;
 };
-
+getRecentlyViewedCars();
 
 </script>
 
@@ -68,7 +82,7 @@ export default {
         this.cars = response.data.map(car => {
       return {
         ...car,
-        obraz: car.obraz // Dodaj tę linię, zakładając, że obraz jest właściwością samochodu
+        obraz: car.obraz
       };
     });
 
@@ -81,14 +95,11 @@ export default {
     checkAuthentication() {
       const token = localStorage.getItem("token");
       if (!token) {
-        // Brak autoryzacji, przekieruj użytkownika na stronę logowania
         this.$router.push("/login");
       } else {
-        // Autoryzacja jest poprawna, pobierz dane
         this.getAllCars();
       }
     },
-    // ... inne metody ...
 
     applyFilters() {
       if (
@@ -105,8 +116,7 @@ export default {
           car.model.toLowerCase().includes(this.model.toLowerCase()) &&
           car.rok.toString().includes(this.rok) &&
           car.cena.toString().includes(this.cena) &&
-          (this.typ === '' || car.typ.toLowerCase() === this.typ.toLowerCase()) // Dodaj ten warunek
-   
+          (this.typ === '' || car.typ.toLowerCase() === this.typ.toLowerCase())   
         );
       }
     },
@@ -115,6 +125,7 @@ export default {
   mounted() {
     this.checkAuthentication();
     this.getAllCars();
+
   },
 
   watch: {
@@ -144,8 +155,7 @@ export default {
   </head>
   
   <body>
-    <div class="slider" @click="$router.push('/home')">
-     
+    <div class="slider" @click="$router.push('/home')">    
         
           <div id="nav">
             <div class="menu">
@@ -155,17 +165,14 @@ export default {
           </div>
     
       </div>
-  <div class="links">
-   
+  <div class="links">  
     <router-link style="text-decoration: none; color: inherit;"  to="/cat" replace><h3>CATEGORY</h3></router-link><br>
-    <h1 style="color:white;">Polecane samochody</h1>
-   
+    <h1 style="color:white;">Polecane samochody</h1>   
   </div>
-      <div class="background">
-       
+      <div class="background">      
         <div class="boxes">
-            <div class="row" v-for="car in (filteredCars.length > 0 ? filteredCars : cars)" :key="car.id" style=" display: inline-block; width: 18%; margin: 5px 5px 5px 5px;">
-                      <router-view>
+          <div class="row" v-for="car in recentlyViewedCars" :key="car.id" style="display: inline-block; width: 18%; margin: 5px 5px 5px 5px;">
+                            <router-view>
                       <div>
                           <div class="item">
                             <div class="photo">
@@ -184,13 +191,9 @@ export default {
                               <button @click="openCarDetails(car)"><h1> Zobacz!</h1></button>
                               <car-details v-if="showCarDetails === car" :car="car" @close="closeCarDetails" />
 </h2>
-
                               
                           </div>
-                      </div>
-                    
-                     
-                     
+                      </div>                            
                       </router-view>           
                   </div>
                   
@@ -202,14 +205,10 @@ export default {
 <footer class="text-center text-lg-start" style="background-color: #000000;">
       <div class="container d-flex justify-content-center py-5">
       </div>
-      <!-- Copyright -->
       <div class="text-center text-white p-3" style="background-color: #dc143c;">
         © 2023 Copyright:
-        <a class="text-white" href="">MiraiArashi.com</a>
-    
-    
+        <a class="text-white" href="">MiraiArashi.com</a>    
       </div>
-      <!-- Copyright -->
     </footer>
 
 </body>
@@ -251,7 +250,7 @@ export default {
   margin-top: 10px;
   border-color: red;
 }
-/* Slider styles */
+
 .slider {
   background-image: url('~@/assets/MiraiArashi2.png');
   background-repeat: no-repeat;
@@ -307,7 +306,6 @@ export default {
     color: rgb(4, 41, 4);
   }
 
-  /* Boxes styles */
   .sidebar {
   float: left;
   background-color: #dc143c;
@@ -324,7 +322,6 @@ export default {
   margin-bottom: 15px;
 }
 
-/* Stylizacja dla formularza filtrów */
 .sidebar form {
   display: flex;
   flex-direction: column;
@@ -401,7 +398,6 @@ color:white;
     object-fit: cover;
   }
 
-  /* Footer styles */
   footer {
     background-color: #000000;
   }
@@ -414,7 +410,6 @@ color:white;
     color: #8B0000;
   }
 
-  /* Container styles */
   .container {
     width: 50%;
     height: 100%;

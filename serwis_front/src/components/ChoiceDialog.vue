@@ -1,38 +1,42 @@
 <template>
   <div class="choice-dialog">
     <p>Wybierz:</p>
-
-    <button @click="goTo('/profil')">Profil</button>
+    <router-link style="text-decoration: none; padding: 2px; color: inherit;" to="/profil" replace>Profil</router-link>
+    <router-link style="text-decoration: none; padding: 2px;color: inherit;" to="/home" replace>Home</router-link>
+    <router-link style="text-decoration: none; padding: 2px;color: inherit;" to="/cart" replace>Cart</router-link><br>
     <button @click="logout">Wyloguj</button>
   </div>
 </template>
 
 <script setup>
 import { ref } from 'vue';
-import { useRouter } from 'vue-router';
+import { createRouter, createWebHistory } from 'vue-router';
+import CartView from './CartView.vue';
+import ProfileView from './ProfileView.vue';
+import axios from 'axios';
+import HomeView from './HomeView.vue';
+const routes = [
+  { path: '/profil', component: ProfileView },
+  { path: '/cart', component: CartView },
+  { path: '/home', component: HomeView },
+];
 
-const router = useRouter();
+const router = createRouter({
+  history: createWebHistory(),
+  routes,
+});
 
 const accessToken = ref(localStorage.getItem('token') || null);
 
-const goTo = (route) => {
-  router.push(route);
-};
-
+const baseURL = "http://localhost:8000"; 
 const logout = async () => {
-  // Czyszczenie tokenu dostępu i maila przy wylogowywaniu
   localStorage.removeItem('accessToken');
-
-
   accessToken.value = null;
-
   try {
-    // Wywołanie backendowego endpointu do wylogowywania
-    const response = await fetch('http://localhost:8080/api/auth/logout', {
+    const response = await axios.get(`${baseURL}/api/auth/logout`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        // Dodaj token do nagłówka, jeśli go masz
         'Authorization': `Bearer ${accessToken.value}`
       }
     });
@@ -46,9 +50,11 @@ const logout = async () => {
     console.error('Error during logout:', error.message);
   }
 
-  // Przekierowanie użytkownika na stronę logowania
+  localStorage.removeItem('accessToken');
+
   router.push('/login');
 };
+
 </script>
 
 <style scoped>

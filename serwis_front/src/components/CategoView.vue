@@ -3,8 +3,6 @@ import { RouterLink, RouterView } from "vue-router";
 import ChoiceDialog from "@/components/ChoiceDialog.vue";
 import { ref } from 'vue';
 
-
-
 const showChoiceDialog = ref(false);
 
 const openChoiceDialog = () => {
@@ -20,9 +18,8 @@ export default {
     };
   },
   created() {
-    // Sprawdź status autoryzacji po załadowaniu komponentu
     const token = localStorage.getItem("token");
-    this.authorized = !!token; // Ustaw na true, jeśli token istnieje
+    this.authorized = !!token; 
   },
 }
   </script>
@@ -101,8 +98,7 @@ export default {
                               </div>
                               <router-link style="text-decoration: none; color: inherit;" to="/suv" replace><h2>Suv</h2></router-link>
                           </div>
-                      </div>
-                     
+                      </div>                     
                       <div class="col-lg-3">
                           <div class="item">
                               <div class="photo">
@@ -147,15 +143,12 @@ export default {
 
 </div>
 <footer class="text-center text-lg-start" style="background-color: #000000;">
-      <div class="container d-flex justify-content-center py-5">
-       
+      <div class="container d-flex justify-content-center py-5">       
       </div>
-      <!-- Copyright -->
       <div class="text-center text-white p-3" style="background-color: #dc143c;">
         © 2023 Copyright:
         <a class="text-white" href="">MiraiArashi.com</a>
       </div>
-      <!-- Copyright -->
     </footer>
 
 </body>
@@ -169,8 +162,6 @@ export default {
   font-family: 'Arial', sans-serif;
   overflow-x: hidden; 
 }
-
-/* Slider styles */
 .slider {
   background-image: url('~@/assets/MiraiArashi2.png');
   background-repeat: no-repeat;
@@ -242,7 +233,7 @@ export default {
   text-decoration: none;
   margin-top: 10px;
 }
-  /* Boxes styles */
+
   .background {
     background-color: #000000;
     height: auto;
@@ -285,7 +276,7 @@ export default {
     object-fit: cover;
   }
 
-  /* Footer styles */
+
   footer {
     background-color: #000000;
   }
@@ -298,7 +289,6 @@ export default {
     color: #8B0000;
   }
 
-  /* Container styles */
   .container {
     width: 50%;
     height: 100%;

@@ -2,23 +2,19 @@
 export default {
   data() {
     return {
-      purchasedCars: [], // Pobierz zakupione samochody z local storage
+      purchasedCars: [], 
     };
   },
   methods: {
     removeFromCart(car) {
-      // Usuń samochód z koszyka
       const index = this.purchasedCars.findIndex(c => c.id === car.id);
       if (index !== -1) {
         this.purchasedCars.splice(index, 1);
-        // Zapisz zmiany w local storage
         localStorage.setItem('purchasedCars', JSON.stringify(this.purchasedCars));
       }
     },
-    // ... reszta kodu ...
   },
   mounted() {
-    // Pobierz zakupione samochody z local storage po załadowaniu komponentu
     this.purchasedCars = JSON.parse(localStorage.getItem('purchasedCars')) || [];
   },
 };
@@ -79,34 +75,25 @@ export default {
                               Klimatyzacja: {{ car.klimatyzacja }}<br>
                               Cena:{{ car.cena }} <br>
                               Typ: {{ car.typ }}<br>
-                              <button @click="removeFromCart(car)">Usuń z koszyka</button>
-</h2>
-
+                              <button @click="removeFromCart(car)">Usuń z koszyka</button></h2>
                               
                           </div>
                       </div>
-                    
-                     
-                     
                       </router-view>           
                   </div>
                   
               </div>
 
-
-
 </div>
 <footer class="text-center text-lg-start" style="background-color: #000000;">
       <div class="container d-flex justify-content-center py-5">
       </div>
-      <!-- Copyright -->
       <div class="text-center text-white p-3" style="background-color: #dc143c;">
         © 2023 Copyright:
         <a class="text-white" href="">MiraiArashi.com</a>
     
     
       </div>
-      <!-- Copyright -->
     </footer>
 
 </body>
@@ -137,7 +124,6 @@ margin-left: 100px;
 text-decoration: none;
 margin-top: 10px;
 }
-/* Slider styles */
 .slider {
 background-image: url('~@/assets/MiraiArashi2.png');
 background-repeat: no-repeat;
@@ -193,7 +179,6 @@ color: darkgreen;
 color: rgb(4, 41, 4);
 }
 
-/* Boxes styles */
 .sidebar {
 float: top;
 background-color: #dc143c;
@@ -208,8 +193,6 @@ display: flex;
 flex-direction: column;
 margin-bottom: 15px;
 }
-
-/* Stylizacja dla formularza filtrów */
 .sidebar form {
 display: flex;
 flex-direction: column;
@@ -286,7 +269,6 @@ height: 100%;
 object-fit: cover;
 }
 
-/* Footer styles */
 footer {
 background-color: #000000;
 }
@@ -299,7 +281,6 @@ footer a:hover {
 color: #8B0000;
 }
 
-/* Container styles */
 .container {
 width: 50%;
 height: 100%;

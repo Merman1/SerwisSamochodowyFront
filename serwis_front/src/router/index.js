@@ -13,6 +13,7 @@ import HomeView from '../components/HomeView.vue';
 import CarDetails from '../components/CarDetails.vue';
 import CartView from '../components/CartView.vue';
 import CabrioView from '../components/CabrioView.vue';
+import SignUpView from '../components/SignUpView.vue';
 
 const routes = [
   {
@@ -96,6 +97,12 @@ const routes = [
     path: '/cabrio',
     name: 'cabrio',
     component: CabrioView,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/register',
+    name: 'register',
+    component: SignUpView,
     meta: { requiresAuth: true },
   },
 ];

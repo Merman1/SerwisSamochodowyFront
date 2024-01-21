@@ -1,28 +1,44 @@
-
 <script setup>
 import { RouterLink, RouterView } from "vue-router";
 import { ref } from 'vue';
 import ChoiceDialog from "@/components/ChoiceDialog.vue";
 import CarDetails from "@/components/CarDetails.vue";
+
 const showChoiceDialog = ref(false);
+
 const showCarDetails = ref(false);
 
 const openChoiceDialog = () => {
   showChoiceDialog.value = true;
 };
 
-
 const openCarDetails = (car) => {
-  // Otwórz okno dialogowe z detalami samochodu
   showCarDetails.value = car;
+  addCarToRecentlyViewed(car.id);
   
 };
 
 const closeCarDetails = () => {
-  // Zamknij okno dialogowe z detalami samochodu
   showCarDetails.value = false;
 };
-
+const baseURL = "http://localhost:8000";
+const addCarToRecentlyViewed = async (carId) => {
+  try {
+    const token = localStorage.getItem("token");
+    await axios.post(
+      `${baseURL}/api/auth/recently-viewed/add/${carId}`,
+      null,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    console.log("Car added to Recently Viewed successfully!");
+  } catch (error) {
+    console.error("Failed to add car to Recently Viewed", error);
+  }
+};
 
 </script>
 
@@ -68,7 +84,7 @@ export default {
         this.cars = response.data.map(car => {
       return {
         ...car,
-        obraz: car.obraz // Dodaj tę linię, zakładając, że obraz jest właściwością samochodu
+        obraz: car.obraz 
       };
     });
 
@@ -81,14 +97,12 @@ export default {
     checkAuthentication() {
       const token = localStorage.getItem("token");
       if (!token) {
-        // Brak autoryzacji, przekieruj użytkownika na stronę logowania
+  
         this.$router.push("/login");
       } else {
-        // Autoryzacja jest poprawna, pobierz dane
         this.getAllCars();
       }
     },
-    // ... inne metody ...
 
     applyFilters() {
       if (
@@ -105,8 +119,7 @@ export default {
           car.model.toLowerCase().includes(this.model.toLowerCase()) &&
           car.rok.toString().includes(this.rok) &&
           car.cena.toString().includes(this.cena) &&
-          (this.typ === '' || car.typ.toLowerCase() === this.typ.toLowerCase()) // Dodaj ten warunek
-   
+          (this.typ === '' || car.typ.toLowerCase() === this.typ.toLowerCase()) 
         );
       }
     },
@@ -144,17 +157,17 @@ export default {
   </head>
   
   <body>
-    <div class="slider" @click="$router.push('/home')">
-        <router-view @authenticated="setAuthenticated">
-        
-          <div id="nav">
-            <div class="menu">
-    <img src="../assets/menu.png" alt="" @click="openChoiceDialog" />
-    <choice-dialog v-if="showChoiceDialog" />
-  </div>
-          </div>
-        </router-view>
+    <div class="slider" @click="handleSliderClick">
+  <router-view @authenticated="setAuthenticated">
+    <div id="nav">
+      <div class="menu">
+        <img src="../assets/menu.png" alt="" @click="openChoiceDialog" />
+        <choice-dialog v-if="showChoiceDialog" />
       </div>
+    </div>
+  </router-view>
+</div>
+
   <div class="links">
     <router-link style="text-decoration: none; color: inherit;"  to="/cat" replace><h3>CATEGORY</h3></router-link><br>
     <router-link style="text-decoration: none; color: inherit;"  to="/future" replace><h3>FUTURISTIC</h3></router-link>
@@ -198,39 +211,26 @@ export default {
                               Cena:{{ car.cena }} <br>
                               Typ: {{ car.typ }}<br>
                               <button @click="openCarDetails(car)"><h1> Zobacz!</h1></button>
-                              <car-details v-if="showCarDetails === car" :car="car" @close="closeCarDetails" />
-</h2>
-
-                              
+                              <car-details v-if="showCarDetails === car" :car="car" @close="closeCarDetails" /></h2>                              
                           </div>
                       </div>
-                    
-                     
-                     
                       </router-view>           
-                  </div>
-                  
+                  </div>                  
               </div>
-
-
 
 </div>
 <footer class="text-center text-lg-start" style="background-color: #000000;">
       <div class="container d-flex justify-content-center py-5">
       </div>
-      <!-- Copyright -->
       <div class="text-center text-white p-3" style="background-color: #dc143c;">
         © 2023 Copyright:
-        <a class="text-white" href="">MiraiArashi.com</a>
-    
-    
+        <a class="text-white" href="">MiraiArashi.com</a>  
       </div>
-      <!-- Copyright -->
     </footer>
 
-</body>
-          
-        </template>
+</body>         
+    </template>
+
 <style scoped>
     
     body {
@@ -257,7 +257,6 @@ export default {
   text-decoration: none;
   margin-top: 10px;
 }
-/* Slider styles */
 .slider {
   background-image: url('~@/assets/MiraiArashi2.png');
   background-repeat: no-repeat;
@@ -313,12 +312,11 @@ export default {
     color: rgb(4, 41, 4);
   }
 
-  /* Boxes styles */
   .sidebar {
   float: left;
   background-color: #dc143c;
   width: 20%;
-  height: 100%;
+  height: 680px;
   margin-top: 30px;
   padding: 20px;
   color: white;
@@ -330,7 +328,6 @@ export default {
   margin-bottom: 15px;
 }
 
-/* Stylizacja dla formularza filtrów */
 .sidebar form {
   display: flex;
   flex-direction: column;
@@ -407,7 +404,6 @@ color:white;
     object-fit: cover;
   }
 
-  /* Footer styles */
   footer {
     background-color: #000000;
   }
@@ -420,7 +416,6 @@ color:white;
     color: #8B0000;
   }
 
-  /* Container styles */
   .container {
     width: 50%;
     height: 100%;
