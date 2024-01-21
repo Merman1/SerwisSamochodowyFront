@@ -60,6 +60,7 @@ export default {
     <router-link style="text-decoration: none; color: inherit;"  to="/suv" replace><h3>SUV</h3></router-link>
     <router-link style="text-decoration: none; color: inherit;"  to="/sedan" replace><H3>SEDAN</H3></router-link>
     <router-link style="text-decoration: none; color: inherit;"  to="/classic" replace><H3>CLASSIC</H3></router-link>
+    <router-link style="text-decoration: none; color: inherit;"  to="/cabrio" replace><H3>CABRIO</H3></router-link>
   </div>
       <div class="background">
         <div class="boxes">
@@ -89,8 +90,8 @@ export default {
                               <div class="photo">
                                   <img src="../assets/Muscle.jpg" alt="">
                               </div>
-                              <router-link   to="" replace> </router-link>
-                              <h2>Muscle</h2>
+                              <router-link style="text-decoration: none; color: inherit;" to="/muscle" replace><h2>Muscle</h2></router-link>
+                            
                           </div>
                       </div>
                       <div class="col-lg-3">
@@ -98,8 +99,7 @@ export default {
                               <div class="photo">
                                   <img src="../assets/Suv.jpg" alt="">
                               </div>
-                              <router-link   to="/home/calendar" replace></router-link>
-                              <h2>Suv</h2>
+                              <router-link style="text-decoration: none; color: inherit;" to="/suv" replace><h2>Suv</h2></router-link>
                           </div>
                       </div>
                      
@@ -108,8 +108,7 @@ export default {
                               <div class="photo">
                                   <img src="../assets/Classic_muscle.jpg" alt="">
                               </div>
-                              <router-link   to="" replace></router-link>
-                              <h2>Classic Muscle</h2>
+                              <router-link style="text-decoration: none; color: inherit;" to="/cmuscle" replace><h2>Classic Muscle</h2></router-link>
                           </div>
                       </div>
                       <div class="col-lg-3">
@@ -126,8 +125,7 @@ export default {
                               <div class="photo">
                                   <img src="../assets/Cabrio.jpg" alt="">
                               </div>
-                              <router-link   to="/home/events" replace></router-link>
-                              <h2>Cabriolet</h2>
+                              <router-link style="text-decoration: none; color: inherit;" to="/cabrio" replace><h2>Cabrio</h2></router-link>
                           </div>
                         
                       </div>   
@@ -136,8 +134,7 @@ export default {
                               <div class="photo">
                                   <img src="../assets/Classic.jpg" alt="">
                               </div>
-                              <router-link   to="/home/events" replace></router-link>
-                              <h2>Classic</h2>
+                              <router-link style="text-decoration: none; color: inherit;" to="/classic" replace><h2>Classic</h2></router-link>
                           </div>
                         
                       </div> 

@@ -9,87 +9,111 @@ import MuscleView from '../components/MuscleView.vue';
 import CmuscleView from '../components/CmuscleView.vue';
 import SuvView from '../components/SuvView.vue';
 import ClassicView from '../components/ClassicView.vue';
-import HomeView from '../components/HomeView.vue'
-import CarDetails from '../components/CarDetails.vue'
-import CartView from '../components/CartView.vue'
+import HomeView from '../components/HomeView.vue';
+import CarDetails from '../components/CarDetails.vue';
+import CartView from '../components/CartView.vue';
+import CabrioView from '../components/CabrioView.vue';
 
 const routes = [
   {
     path: '/cat',
     name: 'car',
     component: CategoView,
+    meta: { requiresAuth: true },
   },
   {
     path: '/future',
     name: 'future',
-    component: FuturisticView
+    component: FuturisticView,
+    meta: { requiresAuth: true },
   },
   {
     path: '/profil',
     name: 'profil',
     component: ProfileView,
-    meta: { requiresAuth: true }, // Dodaj meta, aby sprawdzić autentykację
-  
+    meta: { requiresAuth: true },
   },
   {
     path: '/login',
     name: 'login',
-    component: LoginView
+    component: LoginView,
   },
   {
     path: '/sedan',
     name: 'sedan',
-    component: SedanView
+    component: SedanView,
+    meta: { requiresAuth: true },
   },
   {
     path: '/sport',
     name: 'sport',
-    component: SportView
+    component: SportView,
+    meta: { requiresAuth: true },
   },
   {
     path: '/muscle',
     name: 'muscle',
-    component: MuscleView
+    component: MuscleView,
+    meta: { requiresAuth: true },
   },
   {
     path: '/cmuscle',
     name: 'cmuscle',
-    component: CmuscleView
+    component: CmuscleView,
+    meta: { requiresAuth: true },
   },
   {
     path: '/suv',
     name: 'suv',
-    component: SuvView
+    component: SuvView,
+    meta: { requiresAuth: true },
   },
   {
     path: '/classic',
     name: 'classic',
-    component: ClassicView
+    component: ClassicView,
+    meta: { requiresAuth: true },
   },
   {
     path: '/home',
     name: 'home',
     component: HomeView,
-    
+    meta: { requiresAuth: true },
   },
   {
-    path: '/car-details/:carId', // Tutaj używamy dynamicznego parametru carId
+    path: '/car-details/:carId',
     name: 'carDetails',
     component: CarDetails,
+    meta: { requiresAuth: true },
   },
   {
     path: '/cart',
     name: 'cart',
     component: CartView,
-    
+    meta: { requiresAuth: true },
   },
-
- 
+  {
+    path: '/cabrio',
+    name: 'cabrio',
+    component: CabrioView,
+    meta: { requiresAuth: true },
+  },
 ];
 
 const router = createRouter({
   history: createWebHistory(),
   routes,
+});
+
+router.beforeEach((to, from, next) => {
+  const isAuthenticated = localStorage.getItem('token');
+  const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
+
+  if (requiresAuth && !isAuthenticated) {
+    next('/login');
+  } else {
+    next();
+  }
 });
 
 export default router;

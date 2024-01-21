@@ -2,27 +2,41 @@
 <script setup>
 import { RouterLink, RouterView } from "vue-router";
 import { ref } from 'vue';
-
 import ChoiceDialog from "@/components/ChoiceDialog.vue";
-
+import CarDetails from "@/components/CarDetails.vue";
 const showChoiceDialog = ref(false);
+const showCarDetails = ref(false);
 
 const openChoiceDialog = () => {
   showChoiceDialog.value = true;
 };
+
+
+const openCarDetails = (car) => {
+  // Otwórz okno dialogowe z detalami samochodu
+  showCarDetails.value = car;
+  
+};
+
+const closeCarDetails = () => {
+  // Zamknij okno dialogowe z detalami samochodu
+  showCarDetails.value = false;
+};
+
+
 </script>
 
 <script>
 import axios from 'axios';
 
 export default {
-
+  
   name: "MuscleView",
 
   data() {
     return {
       baseURL: "http://localhost:8000",
-      
+      selectedCar: null,
       marka: '',
       model:'',
       rok:'',
@@ -32,9 +46,9 @@ export default {
       dostepny:'',
       obraz:'',
       klimatyzacja:'',
+      typ:'muscle',
       cars:[],
       filteredCars: [],
-      typ: 'muscle',
     };
   },
 
@@ -43,6 +57,7 @@ export default {
     try {
         const token = localStorage.getItem("token");
         console.log("Token from localStorage:", token);
+        
         const response = await axios.get(`${this.baseURL}/api/auth/cars`, {
           timeout: 30000,
             headers: {
@@ -50,13 +65,19 @@ export default {
             }
         });
 
-        this.cars = response.data;
+        this.cars = response.data.map(car => {
+      return {
+        ...car,
+        obraz: car.obraz // Dodaj tę linię, zakładając, że obraz jest właściwością samochodu
+      };
+    });
+
         this.applyFilters();
     } catch (error) {
         console.error("Failed to fetch cars", error);
     }
 },
-    
+
     checkAuthentication() {
       const token = localStorage.getItem("token");
       if (!token) {
@@ -85,6 +106,7 @@ export default {
           car.rok.toString().includes(this.rok) &&
           car.cena.toString().includes(this.cena) &&
           (this.typ === '' || car.typ.toLowerCase() === this.typ.toLowerCase()) // Dodaj ten warunek
+   
         );
       }
     },
@@ -100,6 +122,7 @@ export default {
     model: 'applyFilters',
     rok: 'applyFilters',
     cena: 'applyFilters',
+    typ: 'applyFilters'
   },
 
 };
@@ -121,10 +144,7 @@ export default {
   </head>
   
   <body>
-    <div v-if="authorized" class="alert alert-success" role="alert">
-  Autoryzacja udana! Witaj w strefie bezpiecznej.
-</div>
-<div class="slider" @click="$router.push('/home')">
+    <div class="slider" @click="$router.push('/home')">
         <router-view @authenticated="setAuthenticated">
         
           <div id="nav">
@@ -135,7 +155,7 @@ export default {
           </div>
         </router-view>
       </div>
-      <div class="links">
+  <div class="links">
     <router-link style="text-decoration: none; color: inherit;"  to="/cat" replace><h3>CATEGORY</h3></router-link><br>
     <router-link style="text-decoration: none; color: inherit;"  to="/future" replace><h3>FUTURISTIC</h3></router-link>
     <router-link style="text-decoration: none; color: inherit;"  to="/sport" replace><h3>SPORT</h3></router-link>
@@ -144,6 +164,7 @@ export default {
     <router-link style="text-decoration: none; color: inherit;"  to="/suv" replace><h3>SUV</h3></router-link>
     <router-link style="text-decoration: none; color: inherit;"  to="/sedan" replace><H3>SEDAN</H3></router-link>
     <router-link style="text-decoration: none; color: inherit;"  to="/classic" replace><H3>CLASSIC</H3></router-link>
+    <router-link style="text-decoration: none; color: inherit;"  to="/cabrio" replace><H3>CABRIO</H3></router-link>
   </div>
       <div class="background">
         <div class="sidebar">
@@ -170,13 +191,17 @@ export default {
             </div>
                               <router-link to="" replace></router-link>
                             
-                              <h2>Marka: {{ car.marka }}<br>
+                            <h2>  Marka: {{ car.marka }}<br>
                               Model: {{ car.model }}<br>
                               Rok produkcji: {{ car.rok }}<br>
                               Moc silnika: {{ car.moc_silnika }}<br>
                               Klimatyzacja: {{ car.klimatyzacja }}<br>
                               Cena:{{ car.cena }} <br>
-                              <button><h1> Buy now!</h1></button></h2>
+                              Typ: {{ car.typ }}<br>
+                              <button @click="openCarDetails(car)"><h1> Zobacz!</h1></button>
+                              <car-details v-if="showCarDetails === car" :car="car" @close="closeCarDetails" />
+</h2>
+
                               
                           </div>
                       </div>
@@ -193,7 +218,6 @@ export default {
 </div>
 <footer class="text-center text-lg-start" style="background-color: #000000;">
       <div class="container d-flex justify-content-center py-5">
-        
       </div>
       <!-- Copyright -->
       <div class="text-center text-white p-3" style="background-color: #dc143c;">
@@ -222,6 +246,7 @@ export default {
   height: 50px;
   background-color: black;
   text-decoration: none;
+  padding-right: 80px;
  
 }
 .links h3{
@@ -290,8 +315,7 @@ export default {
   }
 
   /* Boxes styles */
- /* Boxes styles */
- .sidebar {
+  .sidebar {
   float: left;
   background-color: #dc143c;
   width: 20%;

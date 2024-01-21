@@ -28,7 +28,15 @@ export default {
       localStorage.setItem("token", token);
 
       // Assuming your backend provides user data upon successful login
-         
+      const userIdResponse = await axios.get("/api/auth/user", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      const userId = userIdResponse.data.id;
+
+      // Zapisz ID użytkownika do localStorage
+      localStorage.setItem("userId", userId);
 
     // Przekierowanie użytkownika do trasy "/home"
     this.$router.push("/home");

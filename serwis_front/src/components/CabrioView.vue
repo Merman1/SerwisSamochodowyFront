@@ -31,7 +31,7 @@ import axios from 'axios';
 
 export default {
   
-  name: "FuturisticView",
+  name: "CabrioView",
 
   data() {
     return {
@@ -46,7 +46,7 @@ export default {
       dostepny:'',
       obraz:'',
       klimatyzacja:'',
-      typ:'futuristic',
+      typ:'cabrio',
       cars:[],
       filteredCars: [],
     };
@@ -164,7 +164,6 @@ export default {
     <router-link style="text-decoration: none; color: inherit;"  to="/suv" replace><h3>SUV</h3></router-link>
     <router-link style="text-decoration: none; color: inherit;"  to="/sedan" replace><H3>SEDAN</H3></router-link>
     <router-link style="text-decoration: none; color: inherit;"  to="/classic" replace><H3>CLASSIC</H3></router-link>
-    <router-link style="text-decoration: none; color: inherit;"  to="/cabrio" replace><H3>CABRIO</H3></router-link>
   </div>
       <div class="background">
         <div class="sidebar">

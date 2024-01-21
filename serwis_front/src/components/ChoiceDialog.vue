@@ -13,17 +13,38 @@ import { useRouter } from 'vue-router';
 
 const router = useRouter();
 
-const accessToken = ref(null);
-const userEmail = ref(null);
+const accessToken = ref(localStorage.getItem('token') || null);
 
 const goTo = (route) => {
   router.push(route);
 };
 
-const logout = () => {
+const logout = async () => {
   // Czyszczenie tokenu dostępu i maila przy wylogowywaniu
+  localStorage.removeItem('accessToken');
+
+
   accessToken.value = null;
-  userEmail.value = null;
+
+  try {
+    // Wywołanie backendowego endpointu do wylogowywania
+    const response = await fetch('http://localhost:8080/api/auth/logout', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        // Dodaj token do nagłówka, jeśli go masz
+        'Authorization': `Bearer ${accessToken.value}`
+      }
+    });
+
+    if (response.ok) {
+      console.log('User logged out successfully!');
+    } else {
+      console.error('Error during logout:', response.statusText);
+    }
+  } catch (error) {
+    console.error('Error during logout:', error.message);
+  }
 
   // Przekierowanie użytkownika na stronę logowania
   router.push('/login');

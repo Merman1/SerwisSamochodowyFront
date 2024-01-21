@@ -41,38 +41,46 @@ export default {
   },
   methods: {
     async buyCar() {
-      try {
-        const token = localStorage.getItem("token");
-        console.log("Token from localStorage:", token);
+  try {
+    const token = localStorage.getItem("token");
+    console.log("Token from localStorage:", token);
 
-        // Upewnij się, że this.car.id jest zdefiniowane
-        if (this.car && this.car.id) {
-          // Wywołaj funkcję zakupu na backendzie, przekazując id samochodu
-          await axios.post(`/api/auth/cars/buy/${this.car.id}`, null, {
-            headers: {
-              Authorization: `Bearer ${token}`
-            }
-          });
-            // Dodaj zakupiony samochód do local storage
-    const purchasedCars = JSON.parse(localStorage.getItem('purchasedCars')) || [];
-    purchasedCars.push(this.car);
-    localStorage.setItem('purchasedCars', JSON.stringify(purchasedCars));
+    // Upewnij się, że this.car.id jest zdefiniowane
+    if (this.car && this.car.id) {
+      // Odczytaj ID użytkownika z localStorage
+      const userId = localStorage.getItem("userId");
 
-
-    this.$router.push('/cart');
-        } else {
-          console.error("Błąd zakupu samochodu: Brak identyfikatora samochodu");
-          // Tutaj możesz obsłużyć błąd braku identyfikatora samochodu
-          this.$emit("purchase-error");
+      // Wywołaj funkcję zakupu na backendzie, przekazując id samochodu i id użytkownika
+      await axios.post(`/api/auth/cars/buy/${this.car.id}`, { userId }, {
+        headers: {
+          Authorization: `Bearer ${token}`
         }
-      } catch (error) {
-        // Tutaj możesz obsłużyć błędy związane z zakupem
-        console.error("Błąd zakupu samochodu", error);
-        // Tutaj możesz wyświetlić powiadomienie o błędzie zakupu
-        this.$emit("purchase-error");
-      }
-    },
+      });
 
+      // Dodaj zakupiony samochód do local storage
+      const purchasedCars = JSON.parse(localStorage.getItem('purchasedCars')) || [];
+      purchasedCars.push(this.car);
+      localStorage.setItem('purchasedCars', JSON.stringify(purchasedCars));
+
+      this.$router.push('/cart');
+    } else {
+      console.error("Błąd zakupu samochodu: Brak identyfikatora samochodu");
+      // Tutaj możesz obsłużyć błąd braku identyfikatora samochodu
+      this.$emit("purchase-error");
+    }
+  } catch (error) {
+    // Tutaj możesz obsłużyć błędy związane z zakupem
+    console.error("Błąd zakupu samochodu", error);
+    // Tutaj możesz wyświetlić powiadomienie o błędzie zakupu
+    this.$emit("purchase-error");
+  }
+}, mounted() {
+    // Odczytaj ID użytkownika z localStorage
+    const userId = localStorage.getItem("userId");
+    console.log("User ID:", userId);
+
+    // Zrób coś z ID użytkownika...
+  },
     handlePurchaseSuccess() {
       // Tutaj możesz obsłużyć zdarzenie pomyślnego zakupu
       console.log("Pomyślny zakup samochodu");
